@@ -1,6 +1,6 @@
 
 let activeEffect
-class EffectItem {
+class ReactiveEffect {
   private _fn: any
   constructor(fn: any) {
     this._fn = fn
@@ -8,7 +8,7 @@ class EffectItem {
 
   run() {
     activeEffect = this
-    this._fn()
+    return this._fn()
   }
 }
 
@@ -39,6 +39,8 @@ export function trigger(target, key) {
   }
 }
 export function effect(fn: any) {
-  const _effect = new EffectItem(fn)
+  const _effect = new ReactiveEffect(fn)
   _effect.run()
+
+  return _effect.run.bind(_effect)
 }
