@@ -1,13 +1,24 @@
 import { reactiveHandler, readonlyHandler } from "./baseHandler"
-import { tarck, trigger } from "./effect"
 
+export const enum reactiveFlags {
+  IS_REACTIVE = '_v_is_reactive',
+  IS_READONLY = '_v_is_readonly'
+}
 
 export function reactive(raw: any) {
   return createProxyObjcet(raw, reactiveHandler)
 }
 
+export function isReactive(value) {
+  return !!value[reactiveFlags.IS_REACTIVE]
+}
+
 export function readonly(raw: any) {
   return createProxyObjcet(raw, readonlyHandler)
+}
+
+export function isReadonly(value) {
+  return !!value[reactiveFlags.IS_READONLY]
 }
 
 function createProxyObjcet(raw, handle) {

@@ -1,4 +1,5 @@
 import { tarck, trigger } from "./effect"
+import { reactiveFlags } from "./reactive"
 
 const reactiveGet = createGetter()
 const reactiveSet = createSetter()
@@ -11,6 +12,11 @@ const readonlySet = (target, key) => {
 function createGetter(isReadonly = false) {
   return (target, key) => {
     const res = Reflect.get(target, key)
+    if (key === reactiveFlags.IS_REACTIVE) {
+      return !isReadonly
+    } else if (key === reactiveFlags.IS_READONLY) {
+      return isReadonly
+    }
     if (!isReadonly) {
       tarck(target, key)
     }
