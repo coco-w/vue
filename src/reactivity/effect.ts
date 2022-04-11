@@ -52,7 +52,7 @@ export function tarck(target, key) {
     dep = new Set()
     deps.set(key, dep)
   }
-  if (activeEffect) {
+  if (activeEffect && !activeEffect.active) {
     dep.add(activeEffect)
     activeEffect.deps.push(dep)
   }
