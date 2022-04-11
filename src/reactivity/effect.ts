@@ -1,28 +1,36 @@
 import { extend } from "../shared"
 
 let activeEffect
+let shouldTrack
 class ReactiveEffect {
   private _fn: any
   private scheduler: any
-  active: boolean
+  active = true
   deps: any[]
   private onStop: any
   constructor(fn: any, conf?: { scheduler?: any, onStop?:any }) {
     this._fn = fn
-    this.active = false
     this.deps = []
     extend(this, conf)
   }
 
   run() {
+    if (!this.active) {
+      return this._fn()
+    }
     activeEffect = this
-    return this._fn()
+    shouldTrack = true
+    const res = this._fn()
+    activeEffect = undefined
+    shouldTrack = false
+    return res
+    
   }
 
   stop() {
-    if (!this.active) {
+    if (this.active) {
       clearupEffect(this)
-      this.active = true
+      this.active = false
       if(this.onStop) {
         this.onStop()
       }
@@ -35,11 +43,13 @@ function clearupEffect (effect) {
     effect.deps.forEach((dep) => {
       dep.delete(effect)
     })
+    effect.deps.length = 0
   }
 }
 
 const depsMap = new Map()
 export function tarck(target, key) {
+  if (!isTracking()) return
   let deps = depsMap.get(target)
   if (!deps) {
     deps = new Map()
@@ -52,10 +62,13 @@ export function tarck(target, key) {
     dep = new Set()
     deps.set(key, dep)
   }
-  if (activeEffect && !activeEffect.active) {
-    dep.add(activeEffect)
-    activeEffect.deps.push(dep)
-  }
+  if (dep.has(activeEffect)) return
+  dep.add(activeEffect)
+  activeEffect.deps.push(dep)
+}
+
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined
 }
 
 export function trigger(target, key) {
