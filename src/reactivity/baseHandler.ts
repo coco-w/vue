@@ -1,5 +1,6 @@
+import { isObject } from "../shared"
 import { tarck, trigger } from "./effect"
-import { reactiveFlags } from "./reactive"
+import { reactive, reactiveFlags, readonly } from "./reactive"
 
 const reactiveGet = createGetter()
 const reactiveSet = createSetter()
@@ -16,6 +17,9 @@ function createGetter(isReadonly = false) {
       return !isReadonly
     } else if (key === reactiveFlags.IS_READONLY) {
       return isReadonly
+    }
+    if (isObject(res)) {
+      return isReadonly ? readonly(res) : reactive(res)
     }
     if (!isReadonly) {
       tarck(target, key)

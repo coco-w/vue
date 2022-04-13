@@ -1,3 +1,4 @@
+import { effect } from "../effect"
 import { isReactive, isReadonly, reactive, readonly } from "../reactive"
 
 describe('reactive', () => {
@@ -9,23 +10,18 @@ describe('reactive', () => {
     expect(isReactive(reactiveObj)).toBe(true)
     expect(isReactive(obj)).toBe(false)
   })
-})
 
-describe('readonly', () => {
-  it('happy path', () => {
-    const obj = {a: 1}
-    const readonlyObj = readonly(obj)
-    expect(readonlyObj).not.toBe(obj)
-    expect(readonlyObj.a).toBe(1)
-    expect(isReadonly(readonlyObj)).toBe(true)
-    expect(isReadonly(obj)).toBe(false)
-  })
-
-  it('call set should warn', () => {
-    console.warn = jest.fn()
-    const obj = {a: 1}
-    const readonlyObj = readonly(obj)
-    readonlyObj.a = 2
-    expect(console.warn).toBeCalled()
+  it('nested reactive', () => {
+    const original = {
+      nested: {
+        foo: 1,
+      },
+      array: [{bar: 2}]
+    }
+    const observed = reactive(original)
+    expect(isReactive(observed)).toBe(true)
+    expect(isReactive(observed.nested)).toBe(true)
+    expect(isReactive(observed.array)).toBe(true)
+    expect(isReactive(observed.array[0])).toBe(true)
   })
 })
