@@ -28,3 +28,7 @@ export function shallowReadOnly(raw: any) {
 function createProxyObjcet(raw, handle) {
   return new Proxy(raw, handle)
 }
+
+export function isProxy(raw) {
+  return isReactive(raw) || isReadonly(raw)
+}

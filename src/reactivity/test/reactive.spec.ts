@@ -1,5 +1,5 @@
 import { effect } from "../effect"
-import { isReactive, isReadonly, reactive, readonly } from "../reactive"
+import { isReactive, isReadonly, reactive, readonly, isProxy } from "../reactive"
 
 describe('reactive', () => {
   it('happy path', () => {
@@ -8,6 +8,7 @@ describe('reactive', () => {
     expect(reactiveObj).not.toBe(obj)
     expect(reactiveObj.a).toBe(1)
     expect(isReactive(reactiveObj)).toBe(true)
+    expect(isProxy(reactiveObj)).toBe(true)
     expect(isReactive(obj)).toBe(false)
   })
 
