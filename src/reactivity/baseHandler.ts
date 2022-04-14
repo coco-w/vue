@@ -9,8 +9,13 @@ const readonlySet = (target, key) => {
   console.warn(`${key} 是 readonly`, target)
   return true
 }
+const shallowReadOnlyGet = createGetter(true, true)
+const shallowReadOnlySet = (target, key) => {
+  console.warn(`${key} 是 shallowReadonly`, target)
+  return true
+}
 
-function createGetter(isReadonly = false) {
+function createGetter(isReadonly = false, isShallowReadonly = false) {
   return (target, key) => {
     const res = Reflect.get(target, key)
     if (key === reactiveFlags.IS_REACTIVE) {
@@ -18,7 +23,7 @@ function createGetter(isReadonly = false) {
     } else if (key === reactiveFlags.IS_READONLY) {
       return isReadonly
     }
-    if (isObject(res)) {
+    if (!isShallowReadonly && isObject(res)) {
       return isReadonly ? readonly(res) : reactive(res)
     }
     if (!isReadonly) {
@@ -45,4 +50,9 @@ export const reactiveHandler = {
 export const readonlyHandler = {
   get: readonlyGet,
   set: readonlySet
+}
+
+export const shallowReadOnlyHandler ={
+  get: shallowReadOnlyGet,
+  set: shallowReadOnlySet,
 }
