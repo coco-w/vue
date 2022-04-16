@@ -2,7 +2,7 @@ import { extend } from "../shared"
 
 let activeEffect
 let shouldTrack
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: any
   private scheduler: any
   active = true
@@ -77,6 +77,7 @@ export function isTracking() {
 
 export function trigger(target, key) {
   const deps = depsMap.get(target)
+  if (!deps) return
   const dep = deps.get(key)
   triggerEffect(dep)
 }
