@@ -28,6 +28,6 @@ export default {
   },
 
   render() {
-    return h("div", { tId: 1 }, 'hello' + this.msg);
+    return h("div", { tId: 1, class: ['asda' ,'asdasd']}, [h('div', {class: 'a'}, 'hello'), h('div', {class: 'b'}, 'world')]);
   },
 };
