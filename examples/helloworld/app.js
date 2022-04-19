@@ -1,6 +1,4 @@
-import { h, ref } from "../../lib/mini-vue.esm.js";
-
-const count = ref(0);
+import { h } from '../../lib/min-vue.esm.js'
 
 const HelloWorld = {
   name: "HelloWorld",
@@ -23,9 +21,13 @@ const HelloWorld = {
 
 export default {
   name: "App",
-  setup() {},
+  setup() {
+    return {
+      msg: 'vue'
+    }
+  },
 
   render() {
-    return h("div", { tId: 1 }, [h("p", {}, "主页"), h(HelloWorld)]);
+    return h("div", { tId: 1 }, 'hello' + this.msg);
   },
 };
