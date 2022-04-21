@@ -28,6 +28,7 @@ export default {
   },
 
   render() {
-    return h("div", { tId: 1, class: ['asda' ,'asdasd']}, [h('div', {class: 'a'}, 'hello'), h('div', {class: 'b'}, 'world')]);
+    window.self = this
+    return h("div", { tId: 1, class: ['asda' ,'asdasd']}, 'hello' + this.msg);
   },
 };

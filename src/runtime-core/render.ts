@@ -1,12 +1,11 @@
 import { createComponentInstance, setupComponent } from "./component"
 
 export function render(vnode, container) {
-  path(vnode, container)
+  patch(vnode, container)
 }
 
-function path(vnode, container) {
-  console.log(vnode, '123')
-  if(typeof vnode.type === 'string') {
+function patch(vnode, container) {
+  if (typeof vnode.type === 'string') {
     processElement(vnode, container)
   } else {
     processComponent(vnode, container)
@@ -19,13 +18,15 @@ function processComponent(vnode: any, container: any) {
 
 function mountComponent(vnode: any, container) {
   const instance = createComponentInstance(vnode)
-  setupComponent(instance)
-  setupRenderEffect(instance, container)
+  setupComponent(instance, container)
+  setupRenderEffect(instance, container, vnode)
 }
 
-function setupRenderEffect(instance: any, container) {
-  const subTree = instance.render()
-  path(subTree, container)
+function setupRenderEffect(instance: any, container, vnode) {
+  const { proxy } = instance
+  const subTree = instance.render.call(proxy)
+  patch(subTree, container)
+  vnode.el = subTree.el
 }
 
 function processElement(vnode: any, container: any) {
@@ -34,8 +35,9 @@ function processElement(vnode: any, container: any) {
 
 function mountElement(vnode: any, container: any) {
   const element = document.createElement(vnode.type)
+  vnode.el = element
   if (typeof vnode.children === 'string') {
-    element.textContent = vnode.children  
+    element.textContent = vnode.children
   } else if (Array.isArray(vnode.children)) {
     mountChildren(vnode, element)
   }
@@ -59,7 +61,7 @@ function mountElement(vnode: any, container: any) {
 
 function mountChildren(vnode: any, container: any) {
   vnode.children.forEach(child => {
-    path(child, container)
+    patch(child, container)
   })
 }
 
