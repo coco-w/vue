@@ -1,3 +1,4 @@
+import { shapeFlags } from "../shared/shapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
 
 export function render(vnode, container) {
@@ -5,9 +6,9 @@ export function render(vnode, container) {
 }
 
 function patch(vnode, container) {
-  if (typeof vnode.type === 'string') {
+  if (vnode.shapeFlags & shapeFlags.ELEMENT) {
     processElement(vnode, container)
-  } else {
+  } else if (vnode.shapeFlags & shapeFlags.STATEFULCOMPONENT) {
     processComponent(vnode, container)
   }
 }
@@ -36,9 +37,9 @@ function processElement(vnode: any, container: any) {
 function mountElement(vnode: any, container: any) {
   const element = document.createElement(vnode.type)
   vnode.el = element
-  if (typeof vnode.children === 'string') {
+  if (vnode.shapeFlags & shapeFlags.TEXT_CHILDREN) {
     element.textContent = vnode.children
-  } else if (Array.isArray(vnode.children)) {
+  } else if (vnode.shapeFlags & shapeFlags.ARRAY_CHILDREN) {
     mountChildren(vnode, element)
   }
   const { props } = vnode
