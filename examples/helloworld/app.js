@@ -29,6 +29,10 @@ export default {
 
   render() {
     window.self = this
-    return h("div", { tId: 1, class: ['asda' ,'asdasd']}, 'hello' + this.msg);
+    return h("div", { tId: 1, class: ['asda' ,'asdasd'], onClick(){
+      console.log('click')
+    }, onMousedown() {
+      console.log('mousedown')
+    }}, 'hello' + this.msg);
   },
 };

@@ -46,15 +46,11 @@ function mountElement(vnode: any, container: any) {
   if (props) {
     for (const key in props) {
       const val = props[key]
-      if (typeof val === 'string') {
-        element.setAttribute(key, val)
-      } else if (Array.isArray(val)) {
-        let str = ''
-        val.forEach(value => {
-          str += `${value} `
-        })
-        element.setAttribute(key, str)
+      const isOn = value => /^on[A-Z]/.test(value)
+      if (isOn(key)) {
+        element.addEventListener(key.slice(2).toLocaleLowerCase(), val)
       }
+      element.setAttribute(key, val)
     }
   }
   container.append(element)
