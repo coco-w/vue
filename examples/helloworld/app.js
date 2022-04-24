@@ -15,7 +15,10 @@ export default {
     }, onMousedown() {
       console.log('mousedown')
     }}, [h("div", {}, 'hello' + this.msg), h(Foo, {
-      count: 1
+      count: 1,
+      'onAddFoo': (a, b) => {
+        console.log('app add', a, b)
+      }
     })]);
   },
 };
